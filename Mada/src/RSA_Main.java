@@ -1,7 +1,16 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Random;
 
 public class RSA_Main {
+
+	private String m_string;
 
 	// Generates a prossible prime number
 	private BigInteger generateProbablePrimeNumber() {
@@ -20,7 +29,7 @@ public class RSA_Main {
 		}
 	}
 
-	//Generates n
+	// Generates n
 	private BigInteger generateN() {
 		BigInteger q = primeNumber();
 		BigInteger p = primeNumber();
@@ -28,6 +37,52 @@ public class RSA_Main {
 			return p.multiply(q);
 		return null;
 
+	}
+
+	// Reads string to be decrypted from file 
+	public void readFile() {
+		try (BufferedReader br = new BufferedReader(new FileReader("text.txt"))) {
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+				sb.append(line);
+				sb.append('\n');
+				line = br.readLine();
+			}
+			m_string = sb.toString();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//Writes public and private keys 
+	public void writeToFile(String fileName){
+		
+		if(fileName.equals("sk.txt") || fileName.equals("pk.txt")){
+		
+		 String text = "Hello world";
+	        BufferedWriter output = null;
+	        try {
+	            File file = new File(fileName);
+	            output = new BufferedWriter(new FileWriter(file));
+	            output.write(text);
+	        } catch ( IOException e ) {
+	            e.printStackTrace();
+	        } finally {
+	          if ( output != null ) {
+	            try {
+					output.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	          }
+	        }
+	    }
+	
 	}
 
 	public static void main(String[] args) {
