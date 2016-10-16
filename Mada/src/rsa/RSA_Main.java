@@ -41,30 +41,35 @@ public class RSA_Main {
 
 	}
 
-	public int fiOfN(BigInteger n) {
-		return Math.abs(n.intValue()) - 1;
+	public BigInteger fiOfN(BigInteger n) {
+		return n.subtract(BigInteger.ONE);
+		// return Math.abs(n.intValue()) - 1;
 	}
 
 	// Generates E which belongs to Z of Fi
-	private int generateE(BigInteger n) {
+	private BigInteger generateE(BigInteger n) {
 		boolean flag = false;
-		int i = fiOfN(n);
-		int index = i - 1;
-		while (flag && i > 1) {
-			int[] array = euclidAlgorithm(index, n);
-			// if ggT(index,n)==1
-			if (array[0] == 1) {
+		BigInteger i = fiOfN(n);
+		BigInteger index = i.subtract(BigInteger.ONE);
+		while (flag && index.compareTo(BigInteger.ONE) > 0) {
+			BigInteger[] array = euclidAlgorithm(index, i);
+			// if ggT(index,fiOfN)==1
+			//array[0]==1
+			if (array[0].compareTo(BigInteger.ONE)==0) {
 				flag = true;
 				return index;
 			}
-			index--;
+
+			// index--;
+			index = index.subtract(BigInteger.ONE);
 		}
 
-		return 1;
+		return BigInteger.ONE;
 	}
 
 	// Calculates d by using of euclid-algorithm
-	private int generateD(BigInteger n, int e) {
+	// d = y0 y0 is at the position 2
+	private BigInteger generateD(BigInteger n, BigInteger e) {
 
 		return euclidAlgorithm(e, n)[2];
 	}
@@ -73,34 +78,35 @@ public class RSA_Main {
 	// Bezout-coefficient and returns them in the array. Position one is for
 	// ggT(e,n), position2 and position3 for coefficients.
 
-	private int[] euclidAlgorithm(int e, BigInteger n) {
+	private BigInteger[] euclidAlgorithm(BigInteger e, BigInteger n) {
 
 		// 1st Initialization
-		int a = e;
-		int b = n.intValue();
-		int x0 = 1;
-		int x1 = 0;
-		int y0 = 0;
-		int y1 = 1;
-		int q = a / b;
-		int r = a % b;
+		BigInteger a = e;
+		BigInteger b = n;
+		BigInteger x0 = BigInteger.ONE;
+		BigInteger x1 = BigInteger.ZERO;
+		BigInteger y0 = BigInteger.ZERO;
+		BigInteger y1 = BigInteger.ONE;
+		BigInteger q = a.divide(b);
+		BigInteger r = a.mod(b);
 
 		// 2nd Loop
-		while (b != 0) {
-			q = a / b;
-			r = a % b;
+		// b!=0
+		while (b.compareTo(BigInteger.ZERO) != 0) {
+			q = a.divide(b);
+			r = a.mod(b);
 			a = b;
 			b = r;
 			x0 = x1;
 			y0 = y1;
-			x1 = x0 - q * x1;
-			y1 = y0 - q * y1;
+			x1 = x0.subtract(q.multiply(x1));
+			y1 = y0.subtract(q.multiply(y1));
 		}
 
-		int[] array = new int[3];
+		BigInteger[] array = new BigInteger[3];
 		array[0] = a;
 		array[1] = x0;
-		array[2] = x1;
+		array[2] = y0;
 		return array;
 	}
 
@@ -183,12 +189,12 @@ public class RSA_Main {
 
 	public static void main(String[] args) {
 		RSA_Main rsa = new RSA_Main();
-		BigInteger N=rsa.generateN();
-		int E =rsa.generateE(N);
-		String binaryE = "01234";
-
-		
-		System.out.println(rsa.fiOfN(N));
+		BigInteger N = rsa.generateN();
+		BigInteger E = rsa.generateE(N);
+		BigInteger D = rsa.generateD(E,N);
+	
+		BigInteger[] eucAlg = rsa.euclidAlgorithm(rsa.primeNumber(), N);
+		System.out.println(eucAlg[2]);
 
 	}
 
