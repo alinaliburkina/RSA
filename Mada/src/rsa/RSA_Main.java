@@ -14,7 +14,7 @@ public class RSA_Main {
 
 	private String m_string;
 
-	// Generates a prossible prime number
+	// Generates a possible prime number
 	private BigInteger generateProbablePrimeNumber() {
 		return BigInteger.probablePrime(1000, new Random());
 	}
@@ -42,7 +42,7 @@ public class RSA_Main {
 	}
 
 	public int fiOfN(BigInteger n) {
-		return n.intValueExact() - 1;
+		return Math.abs(n.intValue()) - 1;
 	}
 
 	// Generates E which belongs to Z of Fi
@@ -57,7 +57,7 @@ public class RSA_Main {
 				flag = true;
 				return index;
 			}
-			i--;
+			index--;
 		}
 
 		return 1;
@@ -77,7 +77,7 @@ public class RSA_Main {
 
 		// 1st Initialization
 		int a = e;
-		int b = n.intValueExact();
+		int b = n.intValue();
 		int x0 = 1;
 		int x1 = 0;
 		int y0 = 0;
@@ -116,8 +116,8 @@ public class RSA_Main {
 		int index = 0;
 		while (i >= 0) {
 			if (binaryEArray[index] == 1) {
-				h = h * k % n.intValueExact();
-				k = k * k % n.intValueExact();
+				h = h * k % n.intValue();
+				k = k * k % n.intValue();
 				i = i - 1;
 			}
 			index++;
@@ -183,10 +183,12 @@ public class RSA_Main {
 
 	public static void main(String[] args) {
 		RSA_Main rsa = new RSA_Main();
-		BigInteger primeNumber;
+		BigInteger N=rsa.generateN();
+		int E =rsa.generateE(N);
 		String binaryE = "01234";
 
-		System.out.println(Integer.valueOf(binaryE.substring(1, 2)));
+		
+		System.out.println(rsa.fiOfN(N));
 
 	}
 
