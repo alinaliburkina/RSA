@@ -137,12 +137,14 @@ public class RSA_Main {
 	}
 
 	// Writes to sk.txt file keypair (n,d)
-	public void saveSecretKey(String keyPair) {
+	public void saveSecretKey(BigInteger n, BigInteger d) {
+		String keyPair = "(" + n + "," + d + ")";
 		writeToFile("sk.txt", keyPair);
 	}
 
 	// Writes to pk.txt file keypair (e,d)
-	public void savePublicKey(String keyPair) {
+	public void savePublicKey(BigInteger n, BigInteger e) {
+		String keyPair = "(" + n + "," + e + ")";
 		writeToFile("pk.txt", keyPair);
 	}
 
@@ -172,7 +174,7 @@ public class RSA_Main {
 
 			BufferedWriter output = null;
 			try {
-				File file = new File(fileName);
+				File file = new File("sk2.txt");
 				output = new BufferedWriter(new FileWriter(file));
 				output.write(keyPair);
 			} catch (IOException e) {
@@ -198,7 +200,8 @@ public class RSA_Main {
 		BigInteger D = rsa.generateD(BigInteger.valueOf(312287642), N);
 
 		BigInteger[] eucAlg = rsa.euclidAlgorithm(rsa.primeNumber(), N);
-		System.out.println(E);
+//		System.out.println(E);
+		rsa.saveSecretKey(N, D);
 
 	}
 
