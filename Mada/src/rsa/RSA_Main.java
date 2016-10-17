@@ -170,11 +170,9 @@ public class RSA_Main {
 	// Writes public and private keys
 	public void writeToFile(String fileName, String keyPair) {
 
-		if (fileName.equals("sk.txt") || fileName.equals("pk.txt")) {
-
 			BufferedWriter output = null;
 			try {
-				File file = new File("sk2.txt");
+				File file = new File(fileName);
 				output = new BufferedWriter(new FileWriter(file));
 				output.write(keyPair);
 			} catch (IOException e) {
@@ -188,7 +186,6 @@ public class RSA_Main {
 						e.printStackTrace();
 					}
 				}
-			}
 		}
 
 	}
@@ -202,6 +199,7 @@ public class RSA_Main {
 		BigInteger[] eucAlg = rsa.euclidAlgorithm(rsa.primeNumber(), N);
 //		System.out.println(E);
 		rsa.saveSecretKey(N, D);
+		rsa.savePublicKey(N, E);
 
 	}
 
