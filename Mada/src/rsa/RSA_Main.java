@@ -49,13 +49,13 @@ public class RSA_Main {
 	// Generates E which belongs to Z of Fi
 	private BigInteger generateE(BigInteger n) {
 		boolean flag = false;
-		BigInteger i = fiOfN(n);
-		BigInteger index = i.subtract(BigInteger.ONE);
-		while (flag && index.compareTo(BigInteger.ONE) > 0) {
-			BigInteger[] array = euclidAlgorithm(index, i);
+		BigInteger foOfN = fiOfN(n);
+		BigInteger index = foOfN.subtract(BigInteger.ONE);
+		while (!flag && index.compareTo(BigInteger.ONE) > 0) {
+			BigInteger[] array = euclidAlgorithm(index, foOfN);
 			// if ggT(index,fiOfN)==1
-			//array[0]==1
-			if (array[0].compareTo(BigInteger.ONE)==0) {
+			// array[0]==1
+			if (array[0].equals(BigInteger.ONE)) {
 				flag = true;
 				return index;
 			}
@@ -89,6 +89,8 @@ public class RSA_Main {
 		BigInteger y1 = BigInteger.ONE;
 		BigInteger q = a.divide(b);
 		BigInteger r = a.mod(b);
+		BigInteger x0tmp = x0;
+		BigInteger y0tmp = y0;
 
 		// 2nd Loop
 		// b!=0
@@ -97,16 +99,18 @@ public class RSA_Main {
 			r = a.mod(b);
 			a = b;
 			b = r;
+			x0tmp = x0;
+			y0tmp = y0;
 			x0 = x1;
 			y0 = y1;
-			x1 = x0.subtract(q.multiply(x1));
-			y1 = y0.subtract(q.multiply(y1));
+			x1 = x0tmp.subtract(q.multiply(x1));
+			y1 = y0tmp.subtract(q.multiply(y1));
 		}
 
 		BigInteger[] array = new BigInteger[3];
 		array[0] = a;
 		array[1] = x0;
-		array[2] = y0;
+		array[2] = y0.abs();
 		return array;
 	}
 
@@ -191,10 +195,10 @@ public class RSA_Main {
 		RSA_Main rsa = new RSA_Main();
 		BigInteger N = rsa.generateN();
 		BigInteger E = rsa.generateE(N);
-		BigInteger D = rsa.generateD(E,N);
-	
+		BigInteger D = rsa.generateD(BigInteger.valueOf(312287642), N);
+
 		BigInteger[] eucAlg = rsa.euclidAlgorithm(rsa.primeNumber(), N);
-		System.out.println(eucAlg[2]);
+		System.out.println(E);
 
 	}
 
