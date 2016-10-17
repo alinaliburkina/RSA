@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Random;
 
+import org.w3c.dom.Text;
+
 public class RSA_Main {
 
 	private String m_string;
@@ -114,7 +116,7 @@ public class RSA_Main {
 		return array;
 	}
 
-	public int fastExponention(int x, BigInteger n, int e) {
+	public int fastExponention(int x, BigInteger n, BigInteger e) {
 		String binaryE = Integer.toBinaryString(e);
 		int i = Integer.toBinaryString(e).length() - 1;
 		int[] binaryEArray = new int[i + 1];
@@ -149,8 +151,10 @@ public class RSA_Main {
 	}
 
 	// Reads string to be decrypted from file
-	public void readFile() {
-		try (BufferedReader br = new BufferedReader(new FileReader("text.txt"))) {
+	// Please give tha path in form of "C:\\ ..."
+	public String readFile(String path) {
+		String string = "";
+		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
 
@@ -159,48 +163,76 @@ public class RSA_Main {
 				sb.append('\n');
 				line = br.readLine();
 			}
-			m_string = sb.toString();
+			string = sb.toString();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return string;
+	}
+
+	// Deserializes a keyPair from sk.txt pair and returns an String array.
+	// Elemet 0 is N and lement1 is D.
+	public String[] deserealizer(String keyPair) {
+		// keyPair: (5146541481464164317,456456546563966576387643)
+		String deserealizedString = keyPair.trim().substring(1, keyPair.length() - 2);
+		return deserealizedString.split(",");
+
 	}
 
 	// Writes public and private keys
 	public void writeToFile(String fileName, String keyPair) {
 
-			BufferedWriter output = null;
-			try {
-				File file = new File(fileName);
-				output = new BufferedWriter(new FileWriter(file));
-				output.write(keyPair);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				if (output != null) {
-					try {
-						output.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+		BufferedWriter output = null;
+		try {
+			File file = new File(fileName);
+			output = new BufferedWriter(new FileWriter(file));
+			output.write(keyPair);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (output != null) {
+				try {
+					output.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+			}
+
 		}
 
 	}
 
 	public static void main(String[] args) {
 		RSA_Main rsa = new RSA_Main();
-		BigInteger N = rsa.generateN();
-		BigInteger E = rsa.generateE(N);
-		BigInteger D = rsa.generateD(BigInteger.valueOf(312287642), N);
+		// BigInteger N = rsa.generateN();
+		// BigInteger E = rsa.generateE(N);
+		// BigInteger D = rsa.generateD(BigInteger.valueOf(312287642), N);
+		//
+		// BigInteger[] eucAlg = rsa.euclidAlgorithm(rsa.primeNumber(), N);
+		// rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\data\\chiffre.txt");
+		// String chiffre = rsa.m_string;
+		// rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\data\\sk.txt");
+		// String sk = rsa.m_string;
+		//
+		// System.out.println(rsa.m_string);
+		// rsa.saveSecretKey(N, D);
+		// rsa.savePublicKey(N, E);
 
-		BigInteger[] eucAlg = rsa.euclidAlgorithm(rsa.primeNumber(), N);
-//		System.out.println(E);
-		rsa.saveSecretKey(N, D);
-		rsa.savePublicKey(N, E);
+		String string = rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\pk.txt");
+		BigInteger N = new BigInteger(rsa.deserealizer(string)[0]);
+		BigInteger E = new BigInteger(rsa.deserealizer(string)[1]);
+		String textTXT = rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\text.txt");
 
+		int[] askiiArrayTextTXT = new int[textTXT.length()];
+		for (int i = 0; i < askiiArrayTextTXT.length-1; i++) {
+			askiiArrayTextTXT[i] = textTXT.charAt(i);
+//			rsa.fastExponention(askiiArrayTextTXT[i], N, E);
+			System.out.print(askiiArrayTextTXT[i]+" ");
+		}
+		
 	}
 
 }
