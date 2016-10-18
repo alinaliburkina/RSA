@@ -1,5 +1,6 @@
 package rsa;
 
+import java.awt.List;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.w3c.dom.Text;
@@ -117,25 +119,26 @@ public class RSA_Main {
 	}
 
 	public int fastExponention(int x, BigInteger n, BigInteger e) {
-		String binaryE = Integer.toBinaryString(e);
-		int i = Integer.toBinaryString(e).length() - 1;
-		int[] binaryEArray = new int[i + 1];
-		for (int j = 0; j < binaryEArray.length; j++) {
-			binaryEArray[j] = Integer.valueOf(binaryE.substring(j, j + 1));
-		}
+		String binaryE = e.toString(2);
+		int i = binaryE.length() - 1; // L
 		int h = 1;
 		int k = x;
-		int index = 0;
-		while (i >= 0) {
-			if (binaryEArray[index] == 1) {
-				h = h * k % n.intValue();
-				k = k * k % n.intValue();
-				i = i - 1;
-			}
-			index++;
-		}
-		return h;
+		int[] binaryEArray = new int[binaryE.length()];
 
+		// Array abfüllen mit Bits von Exponent
+
+		while (i >= 0) {
+			for (int j = 0; j < binaryEArray.length; j++) {
+				if (binaryEArray[j] == 1) {
+					h = (h * k) % n.intValue();
+				}
+				k = k ^ 2 % n.intValue();
+				i = i - 1;
+
+			}
+		}
+		System.err.println(i);
+		return h;
 	}
 
 	// Writes to sk.txt file keypair (n,d)
@@ -227,12 +230,15 @@ public class RSA_Main {
 		String textTXT = rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\text.txt");
 
 		int[] askiiArrayTextTXT = new int[textTXT.length()];
-		for (int i = 0; i < askiiArrayTextTXT.length-1; i++) {
+		int[] decrtedTextTXT = new int[textTXT.length()];
+		// decrypt text.txt
+		for (int i = 0; i < askiiArrayTextTXT.length - 1; i++) {
 			askiiArrayTextTXT[i] = textTXT.charAt(i);
-//			rsa.fastExponention(askiiArrayTextTXT[i], N, E);
-			System.out.print(askiiArrayTextTXT[i]+" ");
+			decrtedTextTXT[i] = rsa.fastExponention(askiiArrayTextTXT[i], N, E);
+
+//			System.out.println(decrtedTextTXT[i] + " ");
 		}
-		
+
 	}
 
 }
