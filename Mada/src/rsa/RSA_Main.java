@@ -118,39 +118,37 @@ public class RSA_Main {
 		return array;
 	}
 
-	public int fastExponention(int x, BigInteger n, BigInteger e) {
-		String binaryE = e.toString(2);
-		int i = binaryE.length() - 1; // L
-		int h = 1;
-		int k = x;
-		int[] binaryEArray = new int[binaryE.length()];
+	   public  int fastExponention(BigInteger x, BigInteger e, BigInteger m) {
 
-		// Array abfüllen mit Bits von Exponent
+	        //String binaryE = e.toString(2);
+	        String binaryE = e.toString(2);
+	        int i = binaryE.length()-1;
+	        int h = 1;
+	        int k = x.intValue();
 
-		while (i >= 0) {
-			for (int j = 0; j < binaryEArray.length; j++) {
-				if (binaryEArray[j] == 1) {
-					h = (h * k) % n.intValue();
-				}
-				k = k ^ 2 % n.intValue();
-				i = i - 1;
+	        while(i>=0){
+	            if(binaryE.charAt(i)=='1'){
+	                h = (h * k) % m.intValue();
+	            }
+	            k = (int)((Math.pow(k,2))% m.intValue());
+	            i = i-1;
+	        }
 
-			}
-		}
-		System.err.println(i);
-		return h;
-	}
+	        return h;
+
+	    }
+
 
 	// Writes to sk.txt file keypair (n,d)
 	public void saveSecretKey(BigInteger n, BigInteger d) {
 		String keyPair = "(" + n + "," + d + ")";
-		writeToFile("sk.txt", keyPair);
+		writeToFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\sk.txt", keyPair);
 	}
 
 	// Writes to pk.txt file keypair (e,d)
 	public void savePublicKey(BigInteger n, BigInteger e) {
 		String keyPair = "(" + n + "," + e + ")";
-		writeToFile("pk.txt", keyPair);
+		writeToFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\pk.txt", keyPair);
 	}
 
 	// Reads string to be decrypted from file
@@ -210,35 +208,50 @@ public class RSA_Main {
 
 	public static void main(String[] args) {
 		RSA_Main rsa = new RSA_Main();
-		// BigInteger N = rsa.generateN();
-		// BigInteger E = rsa.generateE(N);
-		// BigInteger D = rsa.generateD(BigInteger.valueOf(312287642), N);
-		//
-		// BigInteger[] eucAlg = rsa.euclidAlgorithm(rsa.primeNumber(), N);
-		// rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\data\\chiffre.txt");
-		// String chiffre = rsa.m_string;
-		// rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\data\\sk.txt");
-		// String sk = rsa.m_string;
-		//
-		// System.out.println(rsa.m_string);
-		// rsa.saveSecretKey(N, D);
-		// rsa.savePublicKey(N, E);
 
+
+		String textTXT = rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\chiffre.txt");
+		String DString = rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\sk.txt");
 		String string = rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\pk.txt");
-		BigInteger N = new BigInteger(rsa.deserealizer(string)[0]);
-		BigInteger E = new BigInteger(rsa.deserealizer(string)[1]);
-		String textTXT = rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\text.txt");
-
-		int[] askiiArrayTextTXT = new int[textTXT.length()];
-		int[] decrtedTextTXT = new int[textTXT.length()];
-		// decrypt text.txt
-		for (int i = 0; i < askiiArrayTextTXT.length - 1; i++) {
-			askiiArrayTextTXT[i] = textTXT.charAt(i);
-			decrtedTextTXT[i] = rsa.fastExponention(askiiArrayTextTXT[i], N, E);
-
-//			System.out.println(decrtedTextTXT[i] + " ");
+		BigInteger N = new BigInteger(rsa.deserealizer(DString)[0]);
+//		BigInteger E = new BigInteger(rsa.deserealizer(string)[1]);
+		BigInteger D = new BigInteger(rsa.deserealizer(DString)[1]);
+		
+		String[] stringArrayText = textTXT.split(",");
+		for (int i = 0; i < stringArrayText.length-1; i++) {
+			System.out.print(rsa.fastExponention(new BigInteger(stringArrayText[i]), D, N)+" ");
 		}
-
+		
+//		int[] askiiArrayTextTXT = new int[textTXT.length()];
+//		int[] encrtedTextTXT = new int[textTXT.length()];
+//		StringBuilder ecryptedTextTXTString = new StringBuilder();
+//		
+//		// ************************encrypt text.txt***************************************
+//		for (int i = 0; i < askiiArrayTextTXT.length - 1; i++) {
+//			askiiArrayTextTXT[i] = textTXT.charAt(i);
+//			encrtedTextTXT[i] = rsa.fastExponention(askiiArrayTextTXT[i], E, N);
+//			ecryptedTextTXTString.append(Math.abs(encrtedTextTXT[i]) + ",");
+//
+//			System.out.print(Math.abs(encrtedTextTXT[i]) + " ");
+//		}
+//		rsa.writeToFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\chiffre.txt",
+//				ecryptedTextTXTString.toString());
+//
+//		// *******************************************************************************
+//		
+//		System.out.println(); 
+//		
+//		
+//		// decrypt text.txt
+//		String chiffreTXTString = rsa.readFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\chiffre.txt");
+//
+//		String[] chiffreTXTStringArray = chiffreTXTString.split(",");
+//
+//		for (int i = 0; i < chiffreTXTStringArray.length - 1; i++) {
+//			System.out.print(rsa.fastExponention(Integer.parseInt(chiffreTXTStringArray[i]), D, N) + " ");
+//		}
+		
+		
 	}
 
 }
