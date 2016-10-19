@@ -258,14 +258,16 @@ public class RSA_Main {
 
 	public static void main(String[] args) {
 		RSA_Main rsa = new RSA_Main();
-
+	
+		String pathGiven ="C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\";
+		String pathOwn ="C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\";
 		// rsa.decryptFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\sk.txt",
 		// "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\chiffre.txt",
 		// "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\text-d.txt");
 
-		String path ="C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\";
-		rsa.encryptFile(path+"sk.txt", path+"pk.txt", path+"text.txt", path+"chiffre.txt");
-		rsa.decryptFile(path+"sk.txt", path+"chiffre.txt", path+"text-d.txt");
+	
+		rsa.encryptFile(pathOwn+"sk.txt", pathOwn+"pk.txt", pathOwn+"text.txt", pathOwn+"chiffre.txt");
+		rsa.decryptFile(pathOwn+"sk.txt", pathOwn+"chiffre.txt", pathOwn+"text-d.txt");
 
 	}
 
