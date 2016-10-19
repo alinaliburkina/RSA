@@ -44,14 +44,14 @@ public class RSA_Main {
 	}
 
 	// Generates E which belongs to Z of phi
-	public BigInteger generateE(BigInteger phi) {
+	public BigInteger generateE(BigInteger n) {
 
 		boolean found = false;
-		BigInteger k = phi.subtract(BigInteger.ONE);
+		BigInteger k = n.subtract(BigInteger.ONE);
 
 		while (!found) {
 
-			if ((euclidAlgorithm(phi, k)[0]).compareTo(BigInteger.ONE) == 0) {
+			if ((euclidAlgorithm(k, phiOfN())[0]).compareTo(BigInteger.ONE) == 0) {
 				return k;
 			}
 
@@ -65,18 +65,18 @@ public class RSA_Main {
 	// d = y0 y0 is at the position 2
 	private BigInteger generateD(BigInteger n, BigInteger e) {
 
-		return euclidAlgorithm(phiOfN(), e)[2];
+		return euclidAlgorithm(e, phiOfN())[2];
 	}
 
 	// Calculates by using of Euclid algorithm ggT(e,n) and
 	// Bezout-coefficient and returns them in the array. Position one is for
 	// ggT(e,n), position2 and position3 for coefficients.
 
-	private BigInteger[] euclidAlgorithm(BigInteger phiOfn, BigInteger e) {
+	private BigInteger[] euclidAlgorithm(BigInteger e, BigInteger phiOfn) {
 
 		// 1st Initialization
-		BigInteger a = e;
-		BigInteger b = phiOfn;
+		BigInteger a = phiOfn;
+		BigInteger b = e;
 		BigInteger x0 = BigInteger.ONE;
 		BigInteger x1 = BigInteger.ZERO;
 		BigInteger y0 = BigInteger.ZERO;
@@ -101,13 +101,10 @@ public class RSA_Main {
 			y1 = y0tmp.subtract(q.multiply(y1));
 		}
 
-		// Konntrolliere ob d kleiner als O ist. Wenn ja, d = d + phi
+		// Checks if y0 is smaller then 0. In the case of true makes
+		// y0=y0+phiOfn
 		if (y0.compareTo(BigInteger.ZERO) == -1) {
-			y0 = y0.add(e);
-		}
-		// Konntrolliere ob d gösser als phi ist. Wenn ja, d = d - phi
-		if (y0.compareTo(e) == 1) {
-			y0 = y0.subtract(e);
+			y0 = y0.add(phiOfn);
 		}
 
 		BigInteger[] array = new BigInteger[3];
@@ -119,7 +116,6 @@ public class RSA_Main {
 
 	public BigInteger fastExponention(BigInteger x, BigInteger e, BigInteger m) {
 
-		// String binaryE = e.toString(2);
 		String binaryE = e.toString(2);
 		int i = binaryE.length() - 1;
 		BigInteger h = BigInteger.ONE;
@@ -150,7 +146,6 @@ public class RSA_Main {
 	}
 
 	// Reads string to be decrypted from file
-	// Please give tha path in form of "C:\\ ..."
 	public String readFile(String path) {
 		String string = "";
 		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
@@ -203,6 +198,8 @@ public class RSA_Main {
 
 	}
 
+	// Encrypts a given text pathToReadText, generates public and secret keys
+	// and writes these into pathToWriteTo file
 	public void encryptFile(String pathToWriteSecretKey, String pathToWritePublicKey, String pathToReadText,
 			String pathToWriteTo) {
 
@@ -261,18 +258,17 @@ public class RSA_Main {
 	public static void main(String[] args) {
 		RSA_Main rsa = new RSA_Main();
 
+		// Please change to your own path
 		String pathGiven = "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\";
 		String pathOwn = "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\";
 
 		// Decryption of a given file. The answer is "Das haben Sie wirklich
 		// sehr gut gemacht!"
+		rsa.decryptFile(pathGiven + "sk.txt", pathGiven + "chiffre.txt", pathGiven + "text-d.txt");
 
-		// rsa.decryptFile(pathGiven+"sk.txt",
-		// pathGiven+"chiffre.txt",
-		// pathGiven+"text-d.txt");
-
+		// Encryption and decryption of an own file.
 		rsa.encryptFile(pathOwn + "sk.txt", pathOwn + "pk.txt", pathOwn + "text.txt", pathOwn + "chiffre.txt");
-		rsa.decryptFile(pathOwn + "sk.txt", pathOwn + "chiffre.txt", pathOwn+"text-d.txt");
+		rsa.decryptFile(pathOwn + "sk.txt", pathOwn + "chiffre.txt", pathOwn + "text-d.txt");
 
 	}
 
