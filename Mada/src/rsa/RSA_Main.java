@@ -14,6 +14,10 @@ import java.util.Random;
 
 import org.w3c.dom.Text;
 
+/**
+ * @author Alina Liburkina, Biraveenmaks Ponnu, Raphael Zumbrunnen
+ */
+
 public class RSA_Main {
 
 	private BigInteger q;
@@ -199,11 +203,21 @@ public class RSA_Main {
 
 	}
 
-	public void encryptFile(String pathToReadKey, String pathToReadText, String pathToWriteTo) {
-		String pkString = readFile(pathToReadKey);
+	public void encryptFile(String pathToWriteSecretKey, String pathToWritePublicKey, String pathToReadText,
+			String pathToWriteTo) {
+
+		BigInteger N = generateN();
+		BigInteger E = generateE(N);
+		BigInteger D = generateD(N, E);
+
+		String keyPairSecret = "(" + N.toString() + "," + D.toString() + ")";
+		String keyPairPublic = "(" + N.toString() + "," + E.toString() + ")";
+
+		writeToFile(pathToWriteSecretKey, keyPairSecret);
+		writeToFile(pathToWriteSecretKey, keyPairPublic);
+
 		String textTXT = readFile(pathToReadText);
-		BigInteger N = new BigInteger(deserealizer(pkString)[0]);
-		BigInteger E = new BigInteger(deserealizer(pkString)[1]);
+
 		int[] askiiArrayTextTXT = new int[textTXT.length()];
 		BigInteger[] encrtedTextTXT = new BigInteger[textTXT.length()];
 		StringBuilder ecryptedTextTXTString = new StringBuilder();
@@ -218,6 +232,8 @@ public class RSA_Main {
 
 	}
 
+	// Decrypts a given text chiffre.txt with a given secret key sk.txt and
+	// writes the result into a file text-d
 	public void decryptFile(String pathToReadKey, String pathToReadEcryptedText, String pathToWriteTo) {
 		String skString = readFile(pathToReadKey);
 		BigInteger N = new BigInteger(deserealizer(skString)[0]);
@@ -243,9 +259,13 @@ public class RSA_Main {
 	public static void main(String[] args) {
 		RSA_Main rsa = new RSA_Main();
 
-		rsa.decryptFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\sk.txt",
-				"C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\chiffre.txt",
-				"C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\text-d.txt");
+		// rsa.decryptFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\sk.txt",
+		// "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\chiffre.txt",
+		// "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\text-d.txt");
+
+		String path ="C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\";
+		rsa.encryptFile(path+"sk.txt", path+"pk.txt", path+"text.txt", path+"chiffre.txt");
+		rsa.decryptFile(path+"sk.txt", path+"chiffre.txt", path+"text-d.txt");
 
 	}
 
