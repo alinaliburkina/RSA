@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -50,7 +51,7 @@ public class RSA_Main {
 
 		while (!found) {
 
-			if ((euclidAlgorithm(k, phi)[0]).compareTo(BigInteger.ONE) == 0) {
+			if ((euclidAlgorithm(phi, k)[0]).compareTo(BigInteger.ONE) == 0) {
 				return k;
 			}
 
@@ -64,7 +65,7 @@ public class RSA_Main {
 	// d = y0 y0 is at the position 2
 	private BigInteger generateD(BigInteger n, BigInteger e) {
 
-		return euclidAlgorithm(e, n)[2];
+		return euclidAlgorithm(phiOfN(), e)[2];
 	}
 
 	// Calculates by using of Euclid algorithm ggT(e,n) and
@@ -173,7 +174,6 @@ public class RSA_Main {
 	// Deserializes a keyPair from sk.txt pair and returns an String array.
 	// Elemet 0 is N and lement1 is D.
 	public String[] deserealizer(String keyPair) {
-		// keyPair: (5146541481464164317,456456546563966576387643)
 		String deserealizedString = keyPair.trim().substring(1, keyPair.length() - 2);
 		return deserealizedString.split(",");
 
@@ -214,7 +214,7 @@ public class RSA_Main {
 		String keyPairPublic = "(" + N.toString() + "," + E.toString() + ")";
 
 		writeToFile(pathToWriteSecretKey, keyPairSecret);
-		writeToFile(pathToWriteSecretKey, keyPairPublic);
+		writeToFile(pathToWritePublicKey, keyPairPublic);
 
 		String textTXT = readFile(pathToReadText);
 
@@ -248,6 +248,8 @@ public class RSA_Main {
 
 			sb.append((char) fastExponention(new BigInteger(chiffreTXTStringArray[i]), D, N).intValue() + ",");
 		}
+
+		// Step to avoid commas
 		String[] strArrTmp = sb.toString().split(",");
 		StringBuilder sb2 = new StringBuilder();
 		for (int i = 0; i < strArrTmp.length; i++) {
@@ -258,16 +260,19 @@ public class RSA_Main {
 
 	public static void main(String[] args) {
 		RSA_Main rsa = new RSA_Main();
-	
-		String pathGiven ="C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\";
-		String pathOwn ="C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\";
-		// rsa.decryptFile("C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\sk.txt",
-		// "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\chiffre.txt",
-		// "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\text-d.txt");
 
-	
-		rsa.encryptFile(pathOwn+"sk.txt", pathOwn+"pk.txt", pathOwn+"text.txt", pathOwn+"chiffre.txt");
-		rsa.decryptFile(pathOwn+"sk.txt", pathOwn+"chiffre.txt", pathOwn+"text-d.txt");
+		String pathGiven = "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\";
+		String pathOwn = "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\";
+
+		// Decryption of a given file. The answer is "Das haben Sie wirklich
+		// sehr gut gemacht!"
+
+		// rsa.decryptFile(pathGiven+"sk.txt",
+		// pathGiven+"chiffre.txt",
+		// pathGiven+"text-d.txt");
+
+		rsa.encryptFile(pathOwn + "sk.txt", pathOwn + "pk.txt", pathOwn + "text.txt", pathOwn + "chiffre.txt");
+		rsa.decryptFile(pathOwn + "sk.txt", pathOwn + "chiffre.txt", pathOwn+"text-d.txt");
 
 	}
 
