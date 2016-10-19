@@ -19,21 +19,9 @@ public class RSA_Main {
 	private BigInteger q;
 	private BigInteger p;
 
-	// Generates a possible prime number
-	private BigInteger generateProbablePrimeNumber() {
-		return BigInteger.probablePrime(1000, new Random());
-	}
-
-	// Checks if a generated number is a prime number and returns a prime
-	// number.
-	// In the way of failure calls itself to make the next check
+	// Generates a prime number
 	private BigInteger primeNumber() {
-		BigInteger bigInt = generateProbablePrimeNumber();
-		if (bigInt.isProbablePrime(20))
-			return bigInt;
-		else {
-			return primeNumber();
-		}
+		return new BigInteger(1024, 100, new Random());
 	}
 
 	// Generates n
@@ -124,19 +112,19 @@ public class RSA_Main {
 		return array;
 	}
 
-	public int fastExponention(BigInteger x, BigInteger e, BigInteger m) {
+	public BigInteger fastExponention(BigInteger x, BigInteger e, BigInteger m) {
 
 		// String binaryE = e.toString(2);
 		String binaryE = e.toString(2);
 		int i = binaryE.length() - 1;
-		int h = 1;
-		int k = x.intValue();
+		BigInteger h = BigInteger.ONE;
+		BigInteger k = x;
 
 		while (i >= 0) {
 			if (binaryE.charAt(i) == '1') {
-				h = (h * k) % m.intValue();
+				h = h.multiply(k).mod(m);
 			}
-			k = (int) ((Math.pow(k, 2)) % m.intValue());
+			k = k.multiply(k).mod(m);
 			i = i - 1;
 		}
 
@@ -217,7 +205,7 @@ public class RSA_Main {
 		BigInteger N = new BigInteger(deserealizer(pkString)[0]);
 		BigInteger E = new BigInteger(deserealizer(pkString)[1]);
 		int[] askiiArrayTextTXT = new int[textTXT.length()];
-		int[] encrtedTextTXT = new int[textTXT.length()];
+		BigInteger[] encrtedTextTXT = new BigInteger[textTXT.length()];
 		StringBuilder ecryptedTextTXTString = new StringBuilder();
 
 		for (int i = 0; i < askiiArrayTextTXT.length - 1; i++) {
@@ -241,9 +229,15 @@ public class RSA_Main {
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < chiffreTXTStringArray.length - 1; i++) {
-			sb.append(fastExponention(new BigInteger(chiffreTXTStringArray[i]), D, N) + ",");
+
+			sb.append((char) fastExponention(new BigInteger(chiffreTXTStringArray[i]), D, N).intValue() + ",");
 		}
-		writeToFile(pathToWriteTo, sb.toString());
+		String[] strArrTmp = sb.toString().split(",");
+		StringBuilder sb2 = new StringBuilder();
+		for (int i = 0; i < strArrTmp.length; i++) {
+			sb2.append(strArrTmp[i]);
+		}
+		writeToFile(pathToWriteTo, sb2.toString());
 	}
 
 	public static void main(String[] args) {
