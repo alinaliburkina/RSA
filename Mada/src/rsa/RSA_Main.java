@@ -9,11 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.acl.Owner;
-import java.util.ArrayList;
 import java.util.Random;
-
-import org.w3c.dom.Text;
 
 /**
  * @author Alina Liburkina, Biraveenmaks Ponnu, Raphael Zumbrunnen
@@ -124,11 +120,15 @@ public class RSA_Main {
 		while (i >= 0) {
 			if (binaryE.charAt(i) == '1') {
 				h = h.multiply(k).mod(m);
-			}
+				System.out.println("h=" + h);
+			} else
+				System.out.println("h=" + h);
 			k = k.multiply(k).mod(m);
+			System.out.println("k=" + k);
 			i = i - 1;
 		}
 
+		System.out.println("Finale h=" + h);
 		return h;
 
 	}
@@ -259,17 +259,23 @@ public class RSA_Main {
 		RSA_Main rsa = new RSA_Main();
 
 		// Please change to your own path
-		String pathGiven = "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\";
-		String pathOwn = "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\";
+		// String pathGiven =
+		// "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataGiven\\";
+		// String pathOwn =
+		// "C:\\Users\\Alina\\git\\RSA_Mada\\Mada\\src\\dataOwnKeyPairs\\";
+		//
+		// // Decryption of a given file. The answer is "Das haben Sie wirklich
+		// // sehr gut gemacht!"
+		// rsa.decryptFile(pathGiven + "sk.txt", pathGiven + "chiffre.txt",
+		// pathGiven + "text-d.txt");
+		//
+		// // Encryption and decryption of an own file.
+		// rsa.encryptFile(pathOwn + "sk.txt", pathOwn + "pk.txt", pathOwn +
+		// "text.txt", pathOwn + "chiffre.txt");
+		// rsa.decryptFile(pathOwn + "sk.txt", pathOwn + "chiffre.txt", pathOwn
+		// + "text-d.txt");
 
-		// Decryption of a given file. The answer is "Das haben Sie wirklich
-		// sehr gut gemacht!"
-		rsa.decryptFile(pathGiven + "sk.txt", pathGiven + "chiffre.txt", pathGiven + "text-d.txt");
-
-		// Encryption and decryption of an own file.
-		rsa.encryptFile(pathOwn + "sk.txt", pathOwn + "pk.txt", pathOwn + "text.txt", pathOwn + "chiffre.txt");
-		rsa.decryptFile(pathOwn + "sk.txt", pathOwn + "chiffre.txt", pathOwn + "text-d.txt");
-
+		rsa.fastExponention(BigInteger.valueOf(9), BigInteger.valueOf(25), BigInteger.valueOf(11));
 	}
 
 }
