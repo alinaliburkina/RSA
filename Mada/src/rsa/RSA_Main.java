@@ -275,7 +275,8 @@ public class RSA_Main {
 		// rsa.decryptFile(pathOwn + "sk.txt", pathOwn + "chiffre.txt", pathOwn
 		// + "text-d.txt");
 
-		rsa.fastExponention(BigInteger.valueOf(9), BigInteger.valueOf(25), BigInteger.valueOf(11));
+		rsa.fastExponention(BigInteger.valueOf(8), BigInteger.valueOf(38), BigInteger.valueOf(11));
+		System.out.println(23*47%60);
 	}
 
 }
